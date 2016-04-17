@@ -1,30 +1,24 @@
-FROM mofe/node:latest
+FROM mofe/ubuntu:latest
 MAINTAINER Mofe Lee <mofe@me.com>
 
-RUN nvm install 4 && \
-    cd /tmp && \
-    wget https://ghost.org/zip/ghost-latest.zip && \
-    unzip ghost-latest.zip -d /ghost && \
-    rm -f ghost-latest.zip && \
-    cd /ghost && \
-    npm install --production && \
-    sed 's/127.0.0.1/0.0.0.0/' /ghost/config.example.js > /ghost/config.js && \
-    useradd ghost --home /ghost
+RUN apt-get update && apt-get -yq install curl unzip sqlite3 libsqlite3-dev build-essential && \
+  curl -sL https://deb.nodesource.com/setup | bash - && \
+  apt-get install -y nodejs
 
-# Add files.
-ADD start.bash /ghost-start
+# GHOST
+RUN mkdir -p /app && \
+  cd /tmp && \
+  curl -L -o ghost-latest.zip https://ghost.org/zip/ghost-latest.zip && \
+  unzip ghost-latest.zip -d /app && \
+  rm -f ghost-latest.zip && \
+  npm install --production --prefix /app
 
-# Set environment variables.
-ENV NODE_ENV production
+ADD config.example.js /app/
 
-# Define mountable directories.
-VOLUME ["/data", "/ghost-override"]
+ENV GHOST_URL http://www.mofe.me/
 
-# Define working directory.
-WORKDIR /ghost
-
-# Define default command.
-CMD ["bash", "/ghost-start"]
-
-# Expose ports.
+WORKDIR /app
 EXPOSE 2368
+VOLUME ["/app/content/data"]
+
+CMD ["node", "index.js"]
