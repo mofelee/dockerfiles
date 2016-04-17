@@ -1,5 +1,6 @@
 FROM ubuntu:14.04
 MAINTAINER Mofe Lee <mofe@me.com>
 
-COPY sources.list /etc/apt/sources.list
+RUN apt-get update \
+    && apt-get install -y vim
 
