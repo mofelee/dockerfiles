@@ -6,9 +6,9 @@ This Dockerfile builds an image with the Python implementation of [shadowsocks](
 Quick Start
 -----------
 
-This image uses ENTRYPOINT to run the containers as an executable. 
+This image uses ENTRYPOINT to run the containers as an executable.
 
-    docker run -d -p 8989:8989 mofe/shadowsocks -s 0.0.0.0 -p 8989 -k $SSPASSWORD -m aes-256-cfb
+    docker run -d -p 8989:8989 mofe/shadowsocks -s 0.0.0.0 -p 8989 -m aes-256-cfb -k $SSPASSWORD
 
 You can configure the service to run on a port of your choice. Just make sure the port number given to Docker is the same as the one given to shadowsocks. Also, it is  highly recommended that you store the shadowsocks password in an environment variable as shown above. This way the password will not show in plain text when you run `docker ps`.
 
